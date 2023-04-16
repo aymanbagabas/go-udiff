@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package diff
+package udiff
 
 import (
 	"bytes"
 	"unicode/utf8"
 
-	"golang.org/x/tools/internal/diff/lcs"
+	"github.com/aymanbagabas/go-udiff/lcs"
 )
 
 // Strings computes the differences between two strings.

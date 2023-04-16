@@ -4,7 +4,7 @@
 
 // Package difftest supplies a set of tests that will operate on any
 // implementation of a diff algorithm as exposed by
-// "golang.org/x/tools/internal/diff"
+// diff "github.com/aymanbagabas/go-udiff"
 package difftest
 
 // There are two kinds of tests, semantic tests, and 'golden data' tests.
@@ -17,7 +17,7 @@ package difftest
 import (
 	"testing"
 
-	"golang.org/x/tools/internal/diff"
+	diff "github.com/aymanbagabas/go-udiff"
 )
 
 const (
