@@ -1,0 +1,70 @@
+name: import upstream
+
+on:
+  schedule:
+    - "0 0 * * 0"
+  workflow_dispatch:
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - run: |
+          # Clone the repository to a temporary directory.
+          tmpdir=$(mktemp -d)
+          tools=$(tmpdir)/tools
+          git clone --depth 1 "https://github.com/golang/tools" "$tools"
+          echo "tools=$tools" >> $GITHUB_ENV)"
+
+          # Copy the diff package to the current directory.
+          cp -r "$tmpdir/tools/internal/diff/"* .
+
+          # Replace the import path.
+          find . -type f -name '*.go' -exec sed -i '' 's|golang.org/x/tools/internal/diff/|github.com/aymanbagabas/go-udiff/|g' {} +
+          find . -type f -name '*.go' -exec sed -i '' 's|"golang.org/x/tools/internal/diff|diff "github.com/aymanbagabas/go-udiff|g' {} +
+
+          # Change package name to udiff.
+          sed -i '' 's|package diff|package udiff|g' *.go
+
+          # Apply patches
+          git apply _patches/0001-fix-remove-testenv.patch
+
+          # Set output variables.
+          echo "base=$(cat .github/UPSTREAM | head -n1)" >> $GITHUB_OUTPUT
+          cd "$tools"
+          commit=$(git rev-parse HEAD)
+          echo "commit=$commit" >> $GITHUB_OUTPUT
+          cd -
+
+          # Update the upstream commit.
+          if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
+            echo "$commit" > .github/UPSTREAM
+          fi
+        id: tools
+      - run: |
+        id: base
+      - run: |
+        id: commit
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "feat: import upstream package"
+          title: "Import upstream package [create-pull-request]"
+          body: |
+            Import upstream changes from [tree](https://github.com/golang/tools/tree/${{ steps.tools.output.commit }}/internal/diff).
+
+            Take a look at the [diff](https://github.com/golang/tools/commits/master/internal/diff) to see what changed.
+          branch: "import-upstream"
+          delete-branch: true
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
