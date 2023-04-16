@@ -38,8 +38,8 @@ import (
 )
 
 func main() {
-  a := "Hello, world!"
-  b := "Hello, Go!"
+  a := "Hello, world!\n"
+  b := "Hello, Go!\nSay hi to µDiff"
 
   edits := udiff.Strings(a, b)
   d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
@@ -49,6 +49,46 @@ func main() {
 
   fmt.Println(d.String())
 }
+```
+
+```
+--- a.txt
++++ b.txt
+@@ -1 +1,2 @@
+-Hello, world!
++Hello, Go!
++Say hi to µDiff
+\ No newline at end of file
+```
+
+Apply changes to a string.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/aymanbagabas/go-udiff"
+)
+
+func main() {
+	a := "Hello, world!\n"
+	b := "Hello, Go!\nSay hi to µDiff"
+
+	edits := udiff.Strings(a, b)
+	final, err := udiff.Apply(a, edits)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(final)
+}
+```
+
+```
+Hello, Go!
+Say hi to µDiff
 ```
 
 ## Alternatives

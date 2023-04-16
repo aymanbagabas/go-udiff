@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	a := "Hello, world!"
-	b := "Hello, Go!"
+	a := "Hello, world!\n"
+	b := "Hello, Go!\nSay hi to µDiff"
 
 	edits := udiff.Strings(a, b)
 	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
