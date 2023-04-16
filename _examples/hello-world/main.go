@@ -9,12 +9,6 @@ import (
 func main() {
 	a := "Hello, world!\n"
 	b := "Hello, Go!\nSay hi to µDiff"
-
-	edits := udiff.Strings(a, b)
-	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(d.String())
+	d := udiff.Unified("a.txt", "b.txt", a, b)
+	fmt.Println(d)
 }
