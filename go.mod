@@ -1,3 +1,3 @@
 module github.com/aymanbagabas/go-udiff
 
-go 1.20
+go 1.18
