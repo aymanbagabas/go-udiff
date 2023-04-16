@@ -24,7 +24,7 @@ You can import the package using the following command:
 go get github.com/aymanbagabas/go-udiff
 ```
 
-## Example
+## Examples
 
 Generate a unified diff for strings `a` and `b`.
 
