@@ -17,7 +17,6 @@ import (
 
 	diff "github.com/aymanbagabas/go-udiff"
 	"github.com/aymanbagabas/go-udiff/difftest"
-	"golang.org/x/tools/internal/testenv"
 )
 
 func TestApply(t *testing.T) {
@@ -112,7 +111,6 @@ func TestLineEdits(t *testing.T) {
 }
 
 func TestToUnified(t *testing.T) {
-	testenv.NeedsTool(t, "patch")
 	for _, tc := range difftest.TestCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			unified, err := diff.ToUnified(difftest.FileA, difftest.FileB, tc.In, tc.Edits)

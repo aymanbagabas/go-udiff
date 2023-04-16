@@ -16,11 +16,9 @@ import (
 	"testing"
 
 	"github.com/aymanbagabas/go-udiff/difftest"
-	"golang.org/x/tools/internal/testenv"
 )
 
 func TestVerifyUnified(t *testing.T) {
-	testenv.NeedsTool(t, "diff")
 	for _, test := range difftest.TestCases {
 		t.Run(test.Name, func(t *testing.T) {
 			if test.NoDiff {
