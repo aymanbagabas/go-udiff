@@ -40,14 +40,8 @@ import (
 func main() {
   a := "Hello, world!\n"
   b := "Hello, Go!\nSay hi to µDiff"
-
-  edits := udiff.Strings(a, b)
-  d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
-  if err != nil {
-      panic(err)
-  }
-
-  fmt.Println(d.String())
+  d := udiff.Unified("a.txt", "b.txt", a, b)
+  fmt.Println(d)
 }
 ```
 
@@ -89,6 +83,43 @@ func main() {
 ```
 Hello, Go!
 Say hi to µDiff
+```
+
+To get a line-by-line diff and edits:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/aymanbagabas/go-udiff"
+)
+
+func main() {
+	a := "Hello, world!\n"
+	b := "Hello, Go!\nSay hi to µDiff"
+
+	edits := udiff.Strings(a, b)
+	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, h := range d.Hunks {
+		fmt.Printf("hunk: -%d, +%d\n", h.FromLine, h.ToLine)
+		for _, l := range h.Lines {
+			fmt.Printf("%s %q\n", l.Kind, l.Content)
+		}
+	}
+}
+```
+
+```
+hunk: -1, +1
+delete "Hello, world!\n"
+insert "Hello, Go!\n"
+insert "Say hi to µDiff"
 ```
 
 ## Alternatives
