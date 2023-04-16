@@ -9,12 +9,13 @@
 
 Micro diff (µDiff) is a Go library that implements the
 [Myers'](http://www.xmailserver.org/diff2.pdf) diffing algorithm. It aims to
-provide a minimum implementation with no extra dependencies. The
-library supports computing diffs, generating [unified format](https://www.gnu.org/software/diffutils/manual/html_node/Unified-Format.html)
-diffs, and applying diffs to strings and bytes.
+provide a minimal API to compute and apply diffs with zero dependencies. It
+also supports generating diffs in the [Unified Format](https://www.gnu.org/software/diffutils/manual/html_node/Unified-Format.html).
+If you are looking for a way to parse unified diffs, check out
+[sourcegraph/go-diff](https://github.com/sourcegraph/go-diff).
 
-This is merely a copy of the [Golang tools internal diff package](https://github.com/golang/tools/tree/master/internal/diff).
-All credit goes to the [Go authors](https://go.dev/AUTHORS).
+This is merely a copy of the [Golang tools internal diff package](https://github.com/golang/tools/tree/master/internal/diff)
+with a few modifications to export package symbols. All credit goes to the [Go authors](https://go.dev/AUTHORS).
 
 ## Usage
 
@@ -131,7 +132,7 @@ insert "Say hi to µDiff"
 ## Contributing
 
 Please send any contributions [upstream](https://github.com/golang/tools). Pull
-requests made against [the upsteam diff package](https://github.com/golang/tools/tree/master/internal/diff)
+requests made against [the upstream diff package](https://github.com/golang/tools/tree/master/internal/diff)
 are welcome.
 
 ## License
