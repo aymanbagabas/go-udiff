@@ -2,7 +2,7 @@ name: import upstream
 
 on:
   schedule:
-    - "0 0 * * 0"
+    - cron: "0 0 * * 0"
   workflow_dispatch:
 
 jobs:
@@ -13,22 +13,22 @@ jobs:
       - run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      - run: |
+      - id: tools
+        run: |
           # Clone the repository to a temporary directory.
-          tmpdir=$(mktemp -d)
-          tools=$(tmpdir)/tools
+          tools=$(mktemp -d)/tools
           git clone --depth 1 "https://github.com/golang/tools" "$tools"
-          echo "tools=$tools" >> $GITHUB_ENV)"
+          echo "tools=$tools" >> $GITHUB_ENV
 
           # Copy the diff package to the current directory.
-          cp -r "$tmpdir/tools/internal/diff/"* .
+          cp -r "$tools/internal/diff/"* .
 
           # Replace the import path.
-          find . -type f -name '*.go' -exec sed -i '' 's|golang.org/x/tools/internal/diff/|github.com/aymanbagabas/go-udiff/|g' {} +
-          find . -type f -name '*.go' -exec sed -i '' 's|"golang.org/x/tools/internal/diff|diff "github.com/aymanbagabas/go-udiff|g' {} +
+          find . -type f -name '*.go' -exec sed -i'' 's|golang.org/x/tools/internal/diff/|github.com/aymanbagabas/go-udiff/|g' {} +
+          find . -type f -name '*.go' -exec sed -i'' 's|"golang.org/x/tools/internal/diff|diff "github.com/aymanbagabas/go-udiff|g' {} +
 
           # Change package name to udiff.
-          sed -i '' 's|package diff|package udiff|g' *.go
+          sed -i'' 's|package diff|package udiff|g' *.go
 
           # Apply patches
           git apply _patches/0001-fix-remove-testenv.patch
@@ -44,11 +44,6 @@ jobs:
           if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
             echo "$commit" > .github/UPSTREAM
           fi
-        id: tools
-      - run: |
-        id: base
-      - run: |
-        id: commit
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
