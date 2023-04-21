@@ -33,16 +33,18 @@ Generate a unified diff for strings `a` and `b`.
 package main
 
 import (
-  "fmt"
+    "fmt"
 
-  "github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
-  a := "Hello, world!\n"
-  b := "Hello, Go!\nSay hi to µDiff"
-  d := udiff.Unified("a.txt", "b.txt", a, b)
-  fmt.Println(d)
+    a := "Hello, world!\n"
+    b := "Hello, Go!\nSay hi to µDiff"
+    edits := myers.ComputeEdits(a, b)
+    unified, _ := udiff.ToUnified("a.txt", "b.txt", a, edits)
+    fmt.Println(d)
 }
 ```
 
@@ -62,22 +64,23 @@ Apply changes to a string.
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
-	a := "Hello, world!\n"
-	b := "Hello, Go!\nSay hi to µDiff"
+    a := "Hello, world!\n"
+    b := "Hello, Go!\nSay hi to µDiff"
 
-	edits := udiff.Strings(a, b)
-	final, err := udiff.Apply(a, edits)
-	if err != nil {
-		panic(err)
-	}
+    edits := myers.ComputeEdits(a, b)
+    final, err := udiff.Apply(a, edits)
+    if err != nil {
+        panic(err)
+    }
 
-	fmt.Println(final)
+    fmt.Println(final)
 }
 ```
 
@@ -92,27 +95,28 @@ To get a line-by-line diff and edits:
 package main
 
 import (
-	"fmt"
+    "fmt"
 
-	"github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff"
+    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
-	a := "Hello, world!\n"
-	b := "Hello, Go!\nSay hi to µDiff"
+    a := "Hello, world!\n"
+    b := "Hello, Go!\nSay hi to µDiff"
 
-	edits := udiff.Strings(a, b)
-	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
-	if err != nil {
-		panic(err)
-	}
+    edits := myers.ComputeEdits(a, b)
+    d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
+    if err != nil {
+        panic(err)
+    }
 
-	for _, h := range d.Hunks {
-		fmt.Printf("hunk: -%d, +%d\n", h.FromLine, h.ToLine)
-		for _, l := range h.Lines {
-			fmt.Printf("%s %q\n", l.Kind, l.Content)
-		}
-	}
+    for _, h := range d.Hunks {
+        fmt.Printf("hunk: -%d, +%d\n", h.FromLine, h.ToLine)
+        for _, l := range h.Lines {
+            fmt.Printf("%s %q\n", l.Kind, l.Content)
+        }
+    }
 }
 ```
 
