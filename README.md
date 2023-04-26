@@ -44,7 +44,7 @@ func main() {
     b := "Hello, Go!\nSay hi to µDiff"
     edits := myers.ComputeEdits(a, b)
     unified, _ := udiff.ToUnified("a.txt", "b.txt", a, edits)
-    fmt.Println(d)
+    fmt.Println(unified)
 }
 ```
 
