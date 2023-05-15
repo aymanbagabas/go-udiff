@@ -53,7 +53,7 @@ jobs:
           commit-message: "feat: import upstream package"
           title: "Import upstream package [create-pull-request]"
           body: |
-            Import upstream changes from [tree](https://github.com/golang/tools/tree/${{ steps.tools.output.commit }}/internal/diff).
+            Import upstream changes from [tree](https://github.com/golang/tools/tree/${{ steps.tools.outputs.commit }}/internal/diff).
 
             Take a look at the [diff](https://github.com/golang/tools/commits/master/internal/diff) to see what changed.
           branch: "import-upstream"
