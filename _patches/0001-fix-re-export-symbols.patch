@@ -1,15 +1,15 @@
-From 49996aa66b38bf3dc43f4708b38d60fc94cc8855 Mon Sep 17 00:00:00 2001
+From 2d0980789148ee5b2c822cb1746e0f8cba36ff67 Mon Sep 17 00:00:00 2001
 From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Date: Tue, 20 Jun 2023 12:47:21 -0400
+Date: Tue, 20 Jun 2023 13:11:56 -0400
 Subject: [PATCH] fix: re-export symbols
 
 Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
 ---
- unified.go | 126 ++++++++++++++++++++++++++---------------------------
- 1 file changed, 63 insertions(+), 63 deletions(-)
+ unified.go | 116 ++++++++++++++++++++++++++---------------------------
+ 1 file changed, 58 insertions(+), 58 deletions(-)
 
 diff --git a/unified.go b/unified.go
-index 098bc157cc3b..6c688d881bf7 100644
+index 098bc157cc3b..98b15f4f523a 100644
 --- a/unified.go
 +++ b/unified.go
 @@ -36,57 +36,57 @@ func ToUnified(oldLabel, newLabel, content string, edits []Edit) (string, error)
@@ -27,12 +27,11 @@ index 098bc157cc3b..6c688d881bf7 100644
 +	// To is the name of the modified file.
 +	To string
 +	// Hunks is the set of edit hunks needed to transform the file content.
-+	Hunks []*Hunk
++	Hunks []*hunk
  }
  
  // Hunk represents a contiguous set of line edits to apply.
--type hunk struct {
-+type Hunk struct {
+ type hunk struct {
  	// The line in the original source where the hunk starts.
 -	fromLine int
 +	FromLine int
@@ -41,15 +40,14 @@ index 098bc157cc3b..6c688d881bf7 100644
 +	ToLine int
  	// The set of line based edits to apply.
 -	lines []line
-+	Lines []Line
++	Lines []line
  }
  
  // Line represents a single line operation to apply as part of a Hunk.
--type line struct {
+ type line struct {
 -	// kind is the type of line this represents, deletion, insertion or copy.
 -	kind opKind
 -	// content is the content of this line.
-+type Line struct {
 +	// Kind is the type of line this represents, deletion, insertion or copy.
 +	Kind OpKind
 +	// Content is the content of this line.
@@ -108,15 +106,6 @@ index 098bc157cc3b..6c688d881bf7 100644
  	}
  	if len(edits) == 0 {
  		return u, nil
-@@ -114,7 +114,7 @@ func toUnified(fromName, toName string, content string, edits []Edit) (unified,
- 		return u, err
- 	}
- 	lines := splitLines(content)
--	var h *hunk
-+	var h *Hunk
- 	last := 0
- 	toLine := 0
- 	for _, edit := range edits {
 @@ -137,26 +137,26 @@ func toUnified(fromName, toName string, content string, edits []Edit) (unified,
  			if h != nil {
  				// add the edge to the previous hunk
@@ -125,10 +114,9 @@ index 098bc157cc3b..6c688d881bf7 100644
 +				u.Hunks = append(u.Hunks, h)
  			}
  			toLine += start - last
--			h = &hunk{
+ 			h = &hunk{
 -				fromLine: start + 1,
 -				toLine:   toLine + 1,
-+			h = &Hunk{
 +				FromLine: start + 1,
 +				ToLine:   toLine + 1,
  			}
@@ -142,13 +130,13 @@ index 098bc157cc3b..6c688d881bf7 100644
  		last = start
  		for i := start; i < end; i++ {
 -			h.lines = append(h.lines, line{kind: opDelete, content: lines[i]})
-+			h.Lines = append(h.Lines, Line{Kind: Delete, Content: lines[i]})
++			h.Lines = append(h.Lines, line{Kind: Delete, Content: lines[i]})
  			last++
  		}
  		if edit.New != "" {
  			for _, content := range splitLines(edit.New) {
 -				h.lines = append(h.lines, line{kind: opInsert, content: content})
-+				h.Lines = append(h.Lines, Line{Kind: Insert, Content: content})
++				h.Lines = append(h.Lines, line{Kind: Insert, Content: content})
  				toLine++
  			}
  		}
@@ -161,21 +149,12 @@ index 098bc157cc3b..6c688d881bf7 100644
  	}
  	return u, nil
  }
-@@ -177,7 +177,7 @@ func splitLines(text string) []string {
- 	return lines
- }
- 
--func addEqualLines(h *hunk, lines []string, start, end int) int {
-+func addEqualLines(h *Hunk, lines []string, start, end int) int {
- 	delta := 0
- 	for i := start; i < end; i++ {
- 		if i < 0 {
 @@ -186,7 +186,7 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
  		if i >= len(lines) {
  			return delta
  		}
 -		h.lines = append(h.lines, line{kind: opEqual, content: lines[i]})
-+		h.Lines = append(h.Lines, Line{Kind: Equal, Content: lines[i]})
++		h.Lines = append(h.Lines, line{Kind: Equal, Content: lines[i]})
  		delta++
  	}
  	return delta
