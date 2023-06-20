@@ -33,7 +33,9 @@ jobs:
           sed -i'' 's|package diff|package udiff|g' *.go
 
           # Apply patches
-          git apply _patches/0001-fix-remove-testenv.patch
+          for p in _patches/*; do
+            git apply $p
+          done
 
           # Set output variables.
           echo "base=$(cat .github/UPSTREAM | head -n1)" >> $GITHUB_OUTPUT
