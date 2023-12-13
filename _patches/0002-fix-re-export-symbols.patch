@@ -1,18 +1,18 @@
-From 2d0980789148ee5b2c822cb1746e0f8cba36ff67 Mon Sep 17 00:00:00 2001
+From b347a6a816ada3af6e374a480d13d469979d8c34 Mon Sep 17 00:00:00 2001
 From: Ayman Bagabas <ayman.bagabas@gmail.com>
-Date: Tue, 20 Jun 2023 13:11:56 -0400
-Subject: [PATCH] fix: re-export symbols
+Date: Wed, 13 Dec 2023 12:42:58 -0500
+Subject: [PATCH 2/2] fix: re-export symbols
 
 Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
 ---
- unified.go | 116 ++++++++++++++++++++++++++---------------------------
- 1 file changed, 58 insertions(+), 58 deletions(-)
+ unified.go | 122 ++++++++++++++++++++++++++---------------------------
+ 1 file changed, 61 insertions(+), 61 deletions(-)
 
 diff --git a/unified.go b/unified.go
-index 098bc157cc3b..98b15f4f523a 100644
+index 85523a1b435a..268ad228825b 100644
 --- a/unified.go
 +++ b/unified.go
-@@ -36,57 +36,57 @@ func ToUnified(oldLabel, newLabel, content string, edits []Edit) (string, error)
+@@ -41,57 +41,57 @@ func ToUnified(oldLabel, newLabel, content string, edits []Edit, contextLines in
  
  // unified represents a set of edits as a unified diff.
  type unified struct {
@@ -26,7 +26,7 @@ index 098bc157cc3b..98b15f4f523a 100644
 +	From string
 +	// To is the name of the modified file.
 +	To string
-+	// Hunks is the set of edit hunks needed to transform the file content.
++	// Hunks is the set of edit Hunks needed to transform the file content.
 +	Hunks []*hunk
  }
  
@@ -50,7 +50,7 @@ index 098bc157cc3b..98b15f4f523a 100644
 -	// content is the content of this line.
 +	// Kind is the type of line this represents, deletion, insertion or copy.
 +	Kind OpKind
-+	// Content is the content of this line.
++	// Content is the Content of this line.
  	// For deletion it is the line being removed, for all others it is the line
  	// to put in the output.
 -	content string
@@ -95,9 +95,9 @@ index 098bc157cc3b..98b15f4f523a 100644
  		return "equal"
  	default:
  		panic("unknown operation kind")
-@@ -102,8 +102,8 @@ const (
- // a unified diff that represents those edits.
- func toUnified(fromName, toName string, content string, edits []Edit) (unified, error) {
+@@ -103,8 +103,8 @@ func (k opKind) String() string {
+ func toUnified(fromName, toName string, content string, edits []Edit, contextLines int) (unified, error) {
+ 	gap := contextLines * 2
  	u := unified{
 -		from: fromName,
 -		to:   toName,
@@ -106,10 +106,22 @@ index 098bc157cc3b..98b15f4f523a 100644
  	}
  	if len(edits) == 0 {
  		return u, nil
-@@ -137,26 +137,26 @@ func toUnified(fromName, toName string, content string, edits []Edit) (unified,
+@@ -129,35 +129,35 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
+ 
+ 		switch {
+ 		case h != nil && start == last:
+-			//direct extension
++			// direct extension
+ 		case h != nil && start <= last+gap:
+-			//within range of previous lines, add the joiners
++			// within range of previous lines, add the joiners
+ 			addEqualLines(h, lines, last, start)
+ 		default:
+-			//need to start a new hunk
++			// need to start a new hunk
  			if h != nil {
  				// add the edge to the previous hunk
- 				addEqualLines(h, lines, last, last+edge)
+ 				addEqualLines(h, lines, last, last+contextLines)
 -				u.hunks = append(u.hunks, h)
 +				u.Hunks = append(u.Hunks, h)
  			}
@@ -121,7 +133,7 @@ index 098bc157cc3b..98b15f4f523a 100644
 +				ToLine:   toLine + 1,
  			}
  			// add the edge to the new hunk
- 			delta := addEqualLines(h, lines, start-edge, start)
+ 			delta := addEqualLines(h, lines, start-contextLines, start)
 -			h.fromLine -= delta
 -			h.toLine -= delta
 +			h.FromLine -= delta
@@ -140,16 +152,16 @@ index 098bc157cc3b..98b15f4f523a 100644
  				toLine++
  			}
  		}
-@@ -164,7 +164,7 @@ func toUnified(fromName, toName string, content string, edits []Edit) (unified,
+@@ -165,7 +165,7 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
  	if h != nil {
  		// add the edge to the final hunk
- 		addEqualLines(h, lines, last, last+edge)
+ 		addEqualLines(h, lines, last, last+contextLines)
 -		u.hunks = append(u.hunks, h)
 +		u.Hunks = append(u.Hunks, h)
  	}
  	return u, nil
  }
-@@ -186,7 +186,7 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
+@@ -187,7 +187,7 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
  		if i >= len(lines) {
  			return delta
  		}
@@ -158,7 +170,7 @@ index 098bc157cc3b..98b15f4f523a 100644
  		delta++
  	}
  	return delta
-@@ -195,19 +195,19 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
+@@ -196,19 +196,19 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
  // String converts a unified diff to the standard textual form for that diff.
  // The output of this function can be passed to tools like patch.
  func (u unified) String() string {
@@ -186,7 +198,7 @@ index 098bc157cc3b..98b15f4f523a 100644
  				toCount++
  			default:
  				fromCount++
-@@ -216,32 +216,32 @@ func (u unified) String() string {
+@@ -217,32 +217,32 @@ func (u unified) String() string {
  		}
  		fmt.Fprint(b, "@@")
  		if fromCount > 1 {
@@ -234,5 +246,5 @@ index 098bc157cc3b..98b15f4f523a 100644
  			}
  		}
 -- 
-2.41.0
+2.43.0
 

@@ -121,7 +121,7 @@ func TestLineEdits(t *testing.T) {
 func TestToUnified(t *testing.T) {
 	for _, tc := range difftest.TestCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			unified, err := diff.ToUnified(difftest.FileA, difftest.FileB, tc.In, tc.Edits)
+			unified, err := diff.ToUnified(difftest.FileA, difftest.FileB, tc.In, tc.Edits, diff.DefaultContextLines)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -154,7 +154,6 @@ func TestToUnified(t *testing.T) {
 				t.Errorf("applying unified failed: got\n%q, wanted\n%q unified\n%q",
 					got, tc.Out, unified)
 			}
-
 		})
 	}
 }
