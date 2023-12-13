@@ -27,7 +27,9 @@ go get github.com/aymanbagabas/go-udiff
 
 ## Examples
 
-Generate a unified diff for strings `a` and `b`.
+Generate a unified diff for strings `a` and `b` with the default number of
+context lines (3). Use `udiff.ToUnified` to specify the number of context
+lines.
 
 ```go
 package main
@@ -36,14 +38,12 @@ import (
     "fmt"
 
     "github.com/aymanbagabas/go-udiff"
-    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
     a := "Hello, world!\n"
     b := "Hello, Go!\nSay hi to µDiff"
-    edits := myers.ComputeEdits(a, b)
-    unified, _ := udiff.ToUnified("a.txt", "b.txt", a, edits)
+    unified := udiff.Unified("a.txt", "b.txt", a, b)
     fmt.Println(unified)
 }
 ```
@@ -106,7 +106,7 @@ func main() {
     b := "Hello, Go!\nSay hi to µDiff"
 
     edits := myers.ComputeEdits(a, b)
-    d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
+    d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits, udiff.DefaultContextLines)
     if err != nil {
         panic(err)
     }
