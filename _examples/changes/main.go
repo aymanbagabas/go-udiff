@@ -11,7 +11,7 @@ func main() {
 	b := "Hello, Go!\nSay hi to µDiff"
 
 	edits := udiff.Strings(a, b)
-	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits)
+	d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits, udiff.DefaultContextLines)
 	if err != nil {
 		panic(err)
 	}
