@@ -67,14 +67,13 @@ import (
     "fmt"
 
     "github.com/aymanbagabas/go-udiff"
-    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
     a := "Hello, world!\n"
     b := "Hello, Go!\nSay hi to µDiff"
 
-    edits := myers.ComputeEdits(a, b)
+    edits := udiff.Strings(a, b)
     final, err := udiff.Apply(a, edits)
     if err != nil {
         panic(err)
@@ -98,14 +97,13 @@ import (
     "fmt"
 
     "github.com/aymanbagabas/go-udiff"
-    "github.com/aymanbagabas/go-udiff/myers"
 )
 
 func main() {
     a := "Hello, world!\n"
     b := "Hello, Go!\nSay hi to µDiff"
 
-    edits := myers.ComputeEdits(a, b)
+    edits := udiff.Strings(a, b)
     d, err := udiff.ToUnifiedDiff("a.txt", "b.txt", a, edits, udiff.DefaultContextLines)
     if err != nil {
         panic(err)
