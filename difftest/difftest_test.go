@@ -17,6 +17,7 @@ import (
 	"github.com/aymanbagabas/go-udiff/difftest"
 )
 
+// check that the TestCases match diff -u output
 func TestVerifyUnified(t *testing.T) {
 	for _, test := range difftest.TestCases {
 		t.Run(test.Name, func(t *testing.T) {
