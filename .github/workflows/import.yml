@@ -15,39 +15,10 @@ jobs:
       - run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      - id: tools
+      - id: import
         run: |
-          # Clone the repository to a temporary directory.
-          tools=$(mktemp -d)/tools
-          git clone --depth 1 "https://github.com/golang/tools" "$tools"
-          echo "tools=$tools" >> $GITHUB_ENV
-
-          # Copy the diff package to the current directory.
-          cp -r "$tools/internal/diff/"* .
-
-          # Replace the import path.
-          find . -type f -name '*.go' -exec sed -i'' 's|golang.org/x/tools/internal/diff/|github.com/aymanbagabas/go-udiff/|g' {} +
-          find . -type f -name '*.go' -exec sed -i'' 's|"golang.org/x/tools/internal/diff|diff "github.com/aymanbagabas/go-udiff|g' {} +
-
-          # Change package name to udiff.
-          sed -i'' 's|package diff|package udiff|g' *.go
-
-          # Apply patches
-          for p in _patches/*; do
-            git apply $p
-          done
-
-          # Set output variables.
-          echo "base=$(cat .github/UPSTREAM | head -n1)" >> $GITHUB_OUTPUT
-          cd "$tools"
-          commit=$(git rev-parse HEAD)
-          echo "commit=$commit" >> $GITHUB_OUTPUT
-          cd -
-
-          # Update the upstream commit.
-          if ! git update-index --refresh || ! git diff-index --quiet HEAD --; then
-            echo "$commit" > .github/UPSTREAM
-          fi
+          make import
+          echo "commit=$(cat .github/UPSTREAM | head -n1)" >> $GITHUB_OUTPUT
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8
@@ -55,7 +26,7 @@ jobs:
           commit-message: "feat: import upstream package"
           title: "Import upstream package [create-pull-request]"
           body: |
-            Import upstream changes from [tree](https://github.com/golang/tools/tree/${{ steps.tools.outputs.commit }}/internal/diff).
+            Import upstream changes from [tree](https://github.com/golang/tools/tree/${{ steps.import.outputs.commit }}/internal/diff).
 
             Take a look at the [diff](https://github.com/golang/tools/commits/master/internal/diff) to see what changed.
           branch: "import-upstream"
