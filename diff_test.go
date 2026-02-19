@@ -130,12 +130,12 @@ func TestToUnified(t *testing.T) {
 				return
 			}
 			orig := filepath.Join(t.TempDir(), "original")
-			err = os.WriteFile(orig, []byte(tc.In), 0o644)
+			err = os.WriteFile(orig, []byte(tc.In), 0644)
 			if err != nil {
 				t.Fatal(err)
 			}
 			temp := filepath.Join(t.TempDir(), "patched")
-			err = os.WriteFile(temp, []byte(tc.In), 0o644)
+			err = os.WriteFile(temp, []byte(tc.In), 0644)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -155,6 +155,7 @@ func TestToUnified(t *testing.T) {
 				t.Errorf("applying unified failed: got\n%q, wanted\n%q unified\n%q",
 					got, tc.Out, xunified)
 			}
+
 		})
 	}
 }
