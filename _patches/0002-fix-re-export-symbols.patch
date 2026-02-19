@@ -8,11 +8,11 @@ Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
  unified.go | 122 ++++++++++++++++++++++++++---------------------------
  1 file changed, 61 insertions(+), 61 deletions(-)
 
-diff --git a/unified.go b/unified.go
-index 85523a1b435a..268ad228825b 100644
---- a/unified.go
-+++ b/unified.go
-@@ -41,57 +41,57 @@ func ToUnified(oldLabel, newLabel, content string, edits []Edit, contextLines in
+diff --git w/unified.go i/unified.go
+index 364400c1e86c..d03b43c6a9a3 100644
+--- w/unified.go
++++ i/unified.go
+@@ -43,57 +43,57 @@ func ToUnified(oldLabel, newLabel, content string, edits []Edit, contextLines in
  
  // unified represents a set of edits as a unified diff.
  type unified struct {
@@ -95,7 +95,7 @@ index 85523a1b435a..268ad228825b 100644
  		return "equal"
  	default:
  		panic("unknown operation kind")
-@@ -103,8 +103,8 @@ func (k opKind) String() string {
+@@ -105,8 +105,8 @@ func (k opKind) String() string {
  func toUnified(fromName, toName string, content string, edits []Edit, contextLines int) (unified, error) {
  	gap := contextLines * 2
  	u := unified{
@@ -106,19 +106,7 @@ index 85523a1b435a..268ad228825b 100644
  	}
  	if len(edits) == 0 {
  		return u, nil
-@@ -129,35 +129,35 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
- 
- 		switch {
- 		case h != nil && start == last:
--			//direct extension
-+			// direct extension
- 		case h != nil && start <= last+gap:
--			//within range of previous lines, add the joiners
-+			// within range of previous lines, add the joiners
- 			addEqualLines(h, lines, last, start)
- 		default:
--			//need to start a new hunk
-+			// need to start a new hunk
+@@ -140,27 +140,27 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
  			if h != nil {
  				// add the edge to the previous hunk
  				addEqualLines(h, lines, last, last+contextLines)
@@ -146,13 +134,14 @@ index 85523a1b435a..268ad228825b 100644
  			last++
  		}
  		if edit.New != "" {
- 			for _, content := range splitLines(edit.New) {
+ 			v, _ := splitLines(edit.New)
+ 			for _, content := range v {
 -				h.lines = append(h.lines, line{kind: opInsert, content: content})
 +				h.Lines = append(h.Lines, line{Kind: Insert, Content: content})
  				toLine++
  			}
  		}
-@@ -165,7 +165,7 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
+@@ -168,7 +168,7 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
  	if h != nil {
  		// add the edge to the final hunk
  		addEqualLines(h, lines, last, last+contextLines)
@@ -161,7 +150,7 @@ index 85523a1b435a..268ad228825b 100644
  	}
  	return u, nil
  }
-@@ -187,7 +187,7 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
+@@ -202,7 +202,7 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
  		if i >= len(lines) {
  			return delta
  		}
@@ -170,7 +159,7 @@ index 85523a1b435a..268ad228825b 100644
  		delta++
  	}
  	return delta
-@@ -196,19 +196,19 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
+@@ -211,19 +211,19 @@ func addEqualLines(h *hunk, lines []string, start, end int) int {
  // String converts a unified diff to the standard textual form for that diff.
  // The output of this function can be passed to tools like patch.
  func (u unified) String() string {
@@ -198,7 +187,7 @@ index 85523a1b435a..268ad228825b 100644
  				toCount++
  			default:
  				fromCount++
-@@ -217,32 +217,32 @@ func (u unified) String() string {
+@@ -232,32 +232,32 @@ func (u unified) String() string {
  		}
  		fmt.Fprint(b, "@@")
  		if fromCount > 1 {
