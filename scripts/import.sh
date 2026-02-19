@@ -17,11 +17,11 @@ git clone --depth 1 "$UPSTREAM_REPO" "$tools"
 cp -r "$tools/$UPSTREAM_PKG/"* .
 
 # Replace import paths.
-find . -type f -name '*.go' -exec gsed -i'' "s|golang.org/x/tools/${UPSTREAM_PKG}/|${MODULE_PATH}/|g" {} +
-find . -type f -name '*.go' -exec gsed -i'' "s|\"golang.org/x/tools/${UPSTREAM_PKG}|diff \"${MODULE_PATH}|g" {} +
+find . -type f -name '*.go' -exec sed -i'' "s|golang.org/x/tools/${UPSTREAM_PKG}/|${MODULE_PATH}/|g" {} +
+find . -type f -name '*.go' -exec sed -i'' "s|\"golang.org/x/tools/${UPSTREAM_PKG}|diff \"${MODULE_PATH}|g" {} +
 
 # Change package name to udiff.
-gsed -i'' 's|package diff|package udiff|g' *.go
+sed -i'' 's|package diff|package udiff|g' *.go
 
 # Apply patches.
 for p in _patches/*; do
