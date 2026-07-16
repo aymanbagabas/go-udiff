@@ -5,46 +5,49 @@ Subject: [PATCH 1/2] fix: remove testenv package
 
 Signed-off-by: Ayman Bagabas <ayman.bagabas@gmail.com>
 ---
- diff_test.go              | 3 ---
+ diff_test.go              | 2 --
  difftest/difftest_test.go | 2 --
- 2 files changed, 5 deletions(-)
+ 2 files changed, 4 deletions(-)
 
-diff --git w/diff_test.go i/diff_test.go
-index 061f5913274b..df76b1219520 100644
---- w/diff_test.go
-+++ i/diff_test.go
-@@ -17,7 +17,6 @@ import (
-
+diff --git i/diff_test.go w/diff_test.go
+index 559f4a89b05e..4dc789204c90 100644
+--- i/diff_test.go
++++ w/diff_test.go
+@@ -18,7 +18,6 @@ import (
+ 
  	diff "github.com/aymanbagabas/go-udiff"
  	"github.com/aymanbagabas/go-udiff/difftest"
 -	"golang.org/x/tools/internal/testenv"
  )
-
+ 
  func TestApply(t *testing.T) {
-@@ -120,7 +119,6 @@ func TestLineEdits(t *testing.T) {
- }
-
- func TestToUnified(t *testing.T) {
--	testenv.NeedsTool(t, "patch")
+@@ -126,7 +125,6 @@ func TestToUnified(t *testing.T) {
+ 	if runtime.GOOS == "plan9" {
+ 		patch = "/bin/ape/patch"
+ 	}
+-	testenv.NeedsTool(t, patch)
  	for _, tc := range difftest.TestCases {
  		t.Run(tc.Name, func(t *testing.T) {
  			nedits := diff.Lines(tc.In, tc.Out)
-diff --git w/difftest/difftest_test.go i/difftest/difftest_test.go
-index 421ac61e0b0b..c23d0522f97d 100644
---- w/difftest/difftest_test.go
-+++ i/difftest/difftest_test.go
-@@ -15,12 +15,10 @@ import (
+diff --git i/difftest/difftest_test.go w/difftest/difftest_test.go
+index e2ad902aa22e..5a5b88613e7a 100644
+--- i/difftest/difftest_test.go
++++ w/difftest/difftest_test.go
+@@ -16,7 +16,6 @@ import (
  	"testing"
-
+ 
  	"github.com/aymanbagabas/go-udiff/difftest"
 -	"golang.org/x/tools/internal/testenv"
  )
-
+ 
+ func diffCmd() string {
+@@ -28,7 +27,6 @@ func diffCmd() string {
+ 
  // check that the TestCases match diff -u output
  func TestVerifyUnified(t *testing.T) {
--	testenv.NeedsTool(t, "diff")
+-	testenv.NeedsTool(t, diffCmd())
  	for _, test := range difftest.TestCases {
  		t.Run(test.Name, func(t *testing.T) {
  			if test.NoDiff {
---
+-- 
 2.43.0
