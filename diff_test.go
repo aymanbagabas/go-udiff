@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -119,6 +120,11 @@ func TestLineEdits(t *testing.T) {
 }
 
 func TestToUnified(t *testing.T) {
+	// Plan 9 has no patch command, so use ape/patch, the POSIX patch.
+	patch := "patch"
+	if runtime.GOOS == "plan9" {
+		patch = "/bin/ape/patch"
+	}
 	for _, tc := range difftest.TestCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			nedits := diff.Lines(tc.In, tc.Out)
@@ -139,7 +145,7 @@ func TestToUnified(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			cmd := exec.Command("patch", "-p0", "-u", "-s", "-o", temp, orig)
+			cmd := exec.Command(patch, "-p0", "-u", "-s", "-o", temp, orig)
 			cmd.Stdin = strings.NewReader(xunified)
 			cmd.Stdout = new(bytes.Buffer)
 			cmd.Stderr = new(bytes.Buffer)
