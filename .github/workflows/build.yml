@@ -15,11 +15,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         if: matrix.go-version != 'gomod'
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         if: matrix.go-version == 'gomod'
         with:
           go-version-file: go.mod
