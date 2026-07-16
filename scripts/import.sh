@@ -16,12 +16,13 @@ git clone --depth 1 "$UPSTREAM_REPO" "$tools"
 # Copy the diff package to the current directory.
 cp -r "$tools/$UPSTREAM_PKG/"* .
 
-# Replace import paths.
-find . -type f -name '*.go' -exec sed -i'' "s|golang.org/x/tools/${UPSTREAM_PKG}/|${MODULE_PATH}/|g" {} +
-find . -type f -name '*.go' -exec sed -i'' "s|\"golang.org/x/tools/${UPSTREAM_PKG}|diff \"${MODULE_PATH}|g" {} +
+# Replace import paths. Use perl for portable in-place editing (GNU/BSD sed
+# disagree on the -i syntax; perl -i behaves the same on Linux and macOS).
+find . -type f -name '*.go' -exec perl -i -pe "s|golang.org/x/tools/${UPSTREAM_PKG}/|${MODULE_PATH}/|g" {} +
+find . -type f -name '*.go' -exec perl -i -pe "s|\"golang.org/x/tools/${UPSTREAM_PKG}|diff \"${MODULE_PATH}|g" {} +
 
 # Change package name to udiff.
-sed -i'' 's|package diff|package udiff|g' *.go
+perl -i -pe 's|package diff|package udiff|g' *.go
 
 # Apply patches.
 for p in _patches/*; do
