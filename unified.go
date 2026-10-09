@@ -279,6 +279,9 @@ func ApplyUnified(udiffs, bef string) (string, error) {
 		switch l[0] {
 		case '@': // The @@ line
 			m := atregexp.FindStringSubmatch(l)
+			if len(m) < 2 {
+				return "", fmt.Errorf("missing line number in %q", l)
+			}
 			fromLine, err := strconv.Atoi(m[1])
 			if err != nil {
 				return "", fmt.Errorf("missing line number in %q", l)
@@ -298,7 +301,8 @@ func ApplyUnified(udiffs, bef string) (string, error) {
 			}
 			left++
 		case ' ':
-			return "", fmt.Errorf("unexpected line %q", l)
+			got = append(got, l[1:])
+			left++
 		default:
 			return "", fmt.Errorf("invalid unified diff: <<%s>>", udiffs)
 		}
