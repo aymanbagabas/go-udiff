@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -163,6 +164,22 @@ func TestToUnified(t *testing.T) {
 			}
 
 		})
+	}
+}
+
+func TestToUnifiedJoinedHunkNewLines(t *testing.T) {
+	var in strings.Builder
+	for i := 1; i <= 20; i++ {
+		in.WriteString(strconv.Itoa(i) + "\n")
+	}
+	out := strings.NewReplacer("\n2\n", "\ntwo\n", "\n6\n", "\nsix\n", "\n18\n", "\neighteen\n").Replace(in.String())
+
+	unified, err := diff.ToUnified(difftest.FileA, difftest.FileB, in.String(), diff.Lines(in.String(), out), diff.DefaultContextLines)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(unified, "@@ -15,6 +15,6 @@") {
+		t.Errorf("the hunk after a joined hunk has wrong line numbers:\n%s", unified)
 	}
 }
 
