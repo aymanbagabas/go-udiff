@@ -1,0 +1,25 @@
+diff --git a/difftest/difftest.go b/difftest/difftest.go
+--- a/difftest/difftest.go
++++ b/difftest/difftest.go
+@@ -15,11 +15,8 @@ package difftest
+ // changes.
+ 
+ import (
+-	"strings"
+ 	"testing"
+ 
+-	"github.com/google/go-cmp/cmp"
+-
+ 	diff "github.com/aymanbagabas/go-udiff"
+ )
+ 
+@@ -345,7 +342,8 @@ func DiffTest(t *testing.T, compute func(before, after string) []diff.Edit) {
+ 					got, unified, test.Out)
+ 			}
+ 			if !test.NoDiff && unified != test.Unified {
+-				t.Errorf("unified diff (-want +got):\n%s", cmp.Diff(strings.Split(test.Unified, "\n"), strings.Split(unified, "\n")))
++				t.Errorf("Unified: got diff:\n%q\nexpected:\n%q diffs:%v",
++					unified, test.Unified, edits)
+ 			}
+ 		})
+ 	}
