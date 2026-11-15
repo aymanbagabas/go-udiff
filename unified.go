@@ -129,6 +129,7 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
 			end++ // EOF counts as an implicit newline
 		}
 
+		toLine += start - last
 		switch {
 		case h != nil && start == last:
 			//direct extension
@@ -142,7 +143,6 @@ func toUnified(fromName, toName string, content string, edits []Edit, contextLin
 				addEqualLines(h, lines, last, last+contextLines)
 				u.Hunks = append(u.Hunks, h)
 			}
-			toLine += start - last
 			h = &hunk{
 				FromLine: start + 1,
 				ToLine:   toLine + 1,
