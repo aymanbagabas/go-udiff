@@ -267,7 +267,10 @@ func (u unified) String() string {
 
 // ApplyUnified applies the unified diffs.
 func ApplyUnified(udiffs, bef string) (string, error) {
-	before := strings.Split(bef, "\n")
+	var before []string
+	if len(bef) > 0 {
+		before = strings.Split(bef, "\n")
+	}
 	unif := strings.Split(udiffs, "\n")
 	var got []string
 	left := 0
@@ -279,12 +282,15 @@ func ApplyUnified(udiffs, bef string) (string, error) {
 		switch l[0] {
 		case '@': // The @@ line
 			m := atregexp.FindStringSubmatch(l)
+			if len(m) < 2 {
+				return "", fmt.Errorf("missing line number in %q", l)
+			}
 			fromLine, err := strconv.Atoi(m[1])
 			if err != nil {
 				return "", fmt.Errorf("missing line number in %q", l)
 			}
-			// before is a slice, so0-based; fromLine is 1-based
-			for ; left < fromLine-1; left++ {
+			// before is a slice, so 0-based; fromLine is 1-based
+			for ; left < fromLine-1 && left < len(before); left++ {
 				got = append(got, before[left])
 			}
 		case '+': // add this line
@@ -297,8 +303,14 @@ func ApplyUnified(udiffs, bef string) (string, error) {
 				continue
 			}
 			left++
-		case ' ':
-			return "", fmt.Errorf("unexpected line %q", l)
+		case ' ': // context line
+			got = append(got, l[1:])
+			left++
+		case '\\': // "\ No newline at end of file"
+			if strings.HasPrefix(l, `\ No newline`) {
+				continue
+			}
+			return "", fmt.Errorf("invalid unified diff: <<%s>>", udiffs)
 		default:
 			return "", fmt.Errorf("invalid unified diff: <<%s>>", udiffs)
 		}
